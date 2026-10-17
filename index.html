@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LoanWise AI | Loan Approval Prediction</title>
+  <meta name="description" content="A Machine Learning decision-support demo that predicts loan approval from the application details you enter.">
+  <meta name="theme-color" content="#0B0F14">
+
+  <!-- Change these two values to rebrand or to point at your deployed FastAPI service. -->
+  <meta name="product-name" content="LoanWise AI">
+  <meta name="api-base-url" content="http://127.0.0.1:8000">
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2360A5FA' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z'/%3E%3Cpath d='m9 12 2 2 4-4'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#assessment">Skip to the loan assessment</a>
+
+  <!-- ============ Navigation ============ -->
+  <header class="nav" id="top">
+    <div class="container nav-inner">
+      <a class="brand" href="#dashboard" aria-label="Go to the top of the page">
+        <span class="brand-mark"><i data-icon="shield-check"></i></span>
+        <span class="brand-name" data-product>LoanWise AI</span>
+      </a>
+
+      <nav class="nav-links" id="navLinks" aria-label="Primary">
+        <a href="#dashboard">Dashboard</a>
+        <a href="#assessment">Loan Assessment</a>
+        <a href="#how">How It Works</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button type="button" class="api-pill" id="apiPill" data-state="checking" aria-live="polite">
+          <span class="dot" aria-hidden="true"></span>
+          <span id="apiPillText">Checking API</span>
+        </button>
+        <a class="btn btn-primary btn-sm nav-cta" href="#assessment">Start Assessment</a>
+        <button type="button" class="icon-btn nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks" aria-label="Open menu">
+          <i data-icon="menu"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ Hero ============ -->
+    <section class="hero" id="dashboard" aria-labelledby="heroTitle">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <h1 id="heroTitle">Make Smarter Loan Decisions with AI</h1>
+          <p class="lead">Evaluate loan applications using a Machine Learning model and explore the prediction generated from the information you provide.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary btn-lg" href="#assessment">Evaluate Application <i data-icon="arrow-right"></i></a>
+            <a class="btn btn-ghost btn-lg" href="#how">How It Works</a>
+          </div>
+          <p class="disclosure">
+            <i data-icon="info"></i>
+            <span>An ML-powered decision-support demonstration. It is not an official lending decision.</span>
+          </p>
+        </div>
+
+        <figure class="hero-art" id="heroArt">
+          <svg viewBox="0 0 560 460" role="img" aria-label="Abstract illustration of a shield, a bar chart and a rising trend line" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="barFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#3B82F6" stop-opacity=".85"/>
+                <stop offset="1" stop-color="#3B82F6" stop-opacity=".08"/>
+              </linearGradient>
+              <linearGradient id="lineFill" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stop-color="#3B82F6"/>
+                <stop offset="1" stop-color="#60A5FA"/>
+              </linearGradient>
+              <radialGradient id="glow" cx=".5" cy=".5" r=".5">
+                <stop offset="0" stop-color="#3B82F6" stop-opacity=".35"/>
+                <stop offset="1" stop-color="#3B82F6" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+
+            <circle class="art-glow" cx="300" cy="230" r="230" fill="url(#glow)"/>
+
+            <g class="art-layer" data-depth="6">
+              <rect x="20" y="40" width="520" height="380" rx="24" fill="#151C28" stroke="#263244"/>
+              <g stroke="#263244" stroke-opacity=".7">
+                <path d="M50 150H510M50 215H510M50 280H510M50 345H510"/>
+              </g>
+              <rect x="300" y="72" width="180" height="10" rx="5" fill="#263244"/>
+              <rect x="300" y="96" width="120" height="10" rx="5" fill="#1B2433"/>
+            </g>
+
+            <g class="art-layer" data-depth="12">
+              <g class="art-bars">
+                <rect class="art-bar" style="--i:0" x="62"  y="320" width="34" height="60"  rx="6" fill="url(#barFill)"/>
+                <rect class="art-bar" style="--i:1" x="112" y="296" width="34" height="84"  rx="6" fill="url(#barFill)"/>
+                <rect class="art-bar" style="--i:2" x="162" y="310" width="34" height="70"  rx="6" fill="url(#barFill)"/>
+                <rect class="art-bar" style="--i:3" x="212" y="262" width="34" height="118" rx="6" fill="url(#barFill)"/>
+                <rect class="art-bar" style="--i:4" x="262" y="276" width="34" height="104" rx="6" fill="url(#barFill)"/>
+                <rect class="art-bar" style="--i:5" x="312" y="222" width="34" height="158" rx="6" fill="url(#barFill)"/>
+                <rect class="art-bar" style="--i:6" x="362" y="238" width="34" height="142" rx="6" fill="url(#barFill)"/>
+                <rect class="art-bar" style="--i:7" x="412" y="190" width="34" height="190" rx="6" fill="url(#barFill)"/>
+                <rect class="art-bar" style="--i:8" x="462" y="170" width="34" height="210" rx="6" fill="url(#barFill)"/>
+              </g>
+              <path class="art-line" d="M62 300 C 110 282, 140 292, 190 252 S 290 236, 330 200 S 420 160, 496 118" fill="none" stroke="url(#lineFill)" stroke-width="4" stroke-linecap="round" pathLength="1"/>
+              <circle class="art-dot" cx="496" cy="118" r="7" fill="#60A5FA"/>
+              <circle class="art-dot-ring" cx="496" cy="118" r="7" fill="none" stroke="#60A5FA"/>
+            </g>
+
+            <g class="art-layer" data-depth="22">
+              <g class="art-shield">
+                <rect x="56" y="64" width="138" height="150" rx="20" fill="#1B2433" stroke="#2E3B52"/>
+                <g transform="translate(76 80) scale(4.2)" fill="rgba(59,130,246,.16)" stroke="#60A5FA" stroke-width=".85" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
+                  <path class="art-check" d="m9 12 2 2 4-4" fill="none" stroke="#F8FAFC" stroke-width="1.1" pathLength="1"/>
+                </g>
+              </g>
+            </g>
+          </svg>
+          <figcaption>Illustration only. It does not represent a real prediction.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============ Overview cards ============ -->
+    <section class="overview" aria-label="What the application offers">
+      <div class="container cards-3">
+        <article class="info-card">
+          <span class="info-icon"><i data-icon="clipboard-check"></i></span>
+          <h2>Loan Assessment</h2>
+          <p>Start an application assessment.</p>
+        </article>
+        <article class="info-card">
+          <span class="info-icon"><i data-icon="cpu"></i></span>
+          <h2>AI-Powered Analysis</h2>
+          <p>Understand the model's output.</p>
+        </article>
+        <article class="info-card">
+          <span class="info-icon"><i data-icon="chart"></i></span>
+          <h2>Transparent Results</h2>
+          <p>View the returned prediction and available probability information.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ Assessment ============ -->
+    <section class="assessment" id="assessment" aria-labelledby="assessTitle">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="assessTitle">Loan assessment</h2>
+          <p>Fill in the application in three short steps, review it, then ask the model for a prediction. Amounts are in Indian rupees.</p>
+        </div>
+
+        <div class="assess-grid">
+          <!-- Form / results card -->
+          <div class="panel form-card" id="formCard">
+            <div class="scan-bar" id="scanBar" aria-hidden="true"></div>
+
+            <div id="formView">
+              <ol class="stepper" id="stepper" aria-label="Application steps"></ol>
+
+              <div class="form-error" id="formError" role="alert" hidden></div>
+
+              <form id="loanForm" novalidate>
+                <div id="stepPanels"></div>
+
+                <div class="form-actions">
+                  <div class="form-actions-left">
+                    <button type="button" class="btn btn-quiet" id="resetBtn"><i data-icon="rotate-ccw"></i> Reset Form</button>
+                    <button type="button" class="btn btn-quiet" id="exampleBtn"><i data-icon="sparkles"></i> Fill example</button>
+                  </div>
+                  <div class="form-actions-right">
+                    <button type="button" class="btn btn-ghost" id="backBtn"><i data-icon="arrow-left"></i> Back</button>
+                    <button type="button" class="btn btn-primary" id="nextBtn"></button>
+                    <button type="submit" class="btn btn-primary btn-predict" id="submitBtn" hidden>
+                      <span class="btn-label"><i data-icon="activity"></i> Predict Loan Status</span>
+                      <span class="btn-busy" aria-hidden="true"><span class="spinner"></span> Analyzing application...</span>
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <!-- Results replace the form in the same card -->
+            <div id="resultsView" hidden>
+              <div class="result" id="result" tabindex="-1" aria-labelledby="resultTitle">
+                <div class="result-top">
+                  <span class="result-badge" id="resultIcon"></span>
+                  <div>
+                    <p class="result-kicker">Model prediction</p>
+                    <h3 id="resultTitle"></h3>
+                    <p id="resultText" class="result-text"></p>
+                  </div>
+                </div>
+
+                <div class="result-body">
+                  <div class="prob" id="probBlock" hidden>
+                    <div class="ring" role="img" id="ring">
+                      <svg viewBox="0 0 120 120" aria-hidden="true">
+                        <circle class="ring-track" cx="60" cy="60" r="52"/>
+                        <circle class="ring-value" id="ringValue" cx="60" cy="60" r="52"/>
+                      </svg>
+                      <span class="ring-num" id="ringNum">0%</span>
+                    </div>
+                    <div class="prob-copy">
+                      <h4>Model-estimated approval probability</h4>
+                      <p>The model's estimate for the <strong>Approved</strong> class. It is not the chance of actually receiving a loan.</p>
+                    </div>
+                  </div>
+
+                  <div class="explain">
+                    <h4><i data-icon="info"></i> Why this result?</h4>
+                    <p>The model returns a prediction based on the submitted inputs. Detailed explanations, such as feature importance, are not currently available from the API.</p>
+                  </div>
+                </div>
+
+                <div class="result-summary">
+                  <h4>Submitted information</h4>
+                  <dl class="summary-grid" id="resultSummary"></dl>
+                </div>
+
+                
+                <div class="result-actions">
+                  <button type="button" class="btn btn-primary" id="newBtn"><i data-icon="rotate-ccw"></i> New Assessment</button>
+                  <button type="button" class="btn btn-ghost" id="reviewBtn"><i data-icon="pencil"></i> Review Inputs</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live side panel -->
+          <aside class="side" aria-label="Live application summary">
+            <div class="panel side-card">
+              <div class="progress">
+                <div class="progress-ring" role="img" id="progressRing" aria-label="Application completion">
+                  <svg viewBox="0 0 80 80" aria-hidden="true">
+                    <circle class="ring-track" cx="40" cy="40" r="34"/>
+                    <circle class="ring-value" id="progressValue" cx="40" cy="40" r="34"/>
+                  </svg>
+                  <span id="progressNum">0/11</span>
+                </div>
+                <div>
+                  <h3>Application progress</h3>
+                  <p id="progressText">Complete every field to unlock the prediction.</p>
+                </div>
+              </div>
+
+              <div class="ratio" id="ratioBlock" hidden>
+                <div class="ratio-head">
+                  <span>Loan amount vs. annual income</span>
+                  <strong id="ratioNum"></strong>
+                </div>
+                <div class="ratio-track" aria-hidden="true"><span id="ratioFill"></span></div>
+                <p>A simple ratio calculated from your entries, with the bar capped at 10×. The model does not report it.</p>
+              </div>
+
+              <h3 class="side-sub">Your entries</h3>
+              <dl class="live-list" id="liveList"></dl>
+            </div>
+
+            <div class="panel side-note">
+              <i data-icon="lock"></i>
+              <p>Entries stay in this page. Nothing is saved in your browser, and values are sent only to the prediction service when you press Predict Loan Status.</p>
+            </div>
+          </aside>
+        </div>
+
+        <!-- Polite live region for loading / result announcements -->
+        <p class="sr-only" id="liveRegion" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <!-- ============ How it works ============ -->
+    <section class="how" id="how" aria-labelledby="howTitle">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="howTitle">How it works</h2>
+          <p>The flow follows the way this project is actually built.</p>
+        </div>
+        <ol class="how-steps">
+          <li>
+            <span class="how-num">1</span>
+            <h3>Enter the application</h3>
+            <p>Provide the eleven details the model was trained on.</p>
+          </li>
+          <li>
+            <span class="how-num">2</span>
+            <h3>Send it to the API</h3>
+            <p>The page posts your values as JSON to the FastAPI service, which validates them.</p>
+          </li>
+          <li>
+            <span class="how-num">3</span>
+            <h3>The model processes it</h3>
+            <p>The trained Scikit-learn pipeline turns the submitted features into a prediction.</p>
+          </li>
+          <li>
+            <span class="how-num">4</span>
+            <h3>See the result</h3>
+            <p>The page shows the returned status and the model's approval probability.</p>
+          </li>
+        </ol>
+        <p class="how-note">This project does not connect to banks, check credit bureaus, or make official lending decisions.</p>
+      </div>
+    </section>
+
+    <!-- ============ Responsible AI ============ -->
+    <section class="privacy" id="privacy" aria-labelledby="privacyTitle">
+      <div class="container">
+        <div class="panel privacy-card">
+          <span class="info-icon"><i data-icon="shield-check"></i></span>
+          <div>
+            <h2 id="privacyTitle">Responsible AI and privacy</h2>
+            <p id="disclaimer">This application demonstrates Machine Learning-based loan prediction. Its output is an estimate generated by the trained model and is not a guarantee of loan approval or a substitute for an authorized lender's assessment.</p>
+            <p>The model has not been evaluated here for fairness, bias, or regulatory compliance, so no such claim is made. The page asks only for the fields the model requires and does not store applicant data in the browser.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ Footer ============ -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <span class="brand-mark sm"><i data-icon="shield-check"></i></span>
+        <span data-product>LoanWise AI</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="#dashboard">About the project</a>
+        <a href="#how">How It Works</a>
+        <a href="#privacy">Privacy notice</a>
+        <a href="#disclaimer">Prediction disclaimer</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
