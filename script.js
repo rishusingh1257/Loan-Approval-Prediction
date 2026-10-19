@@ -9,7 +9,7 @@
 
   /* ---------- Configuration (edit in index.html <meta> tags) ---------- */
   const meta = (name, fallback) => document.querySelector(`meta[name="${name}"]`)?.content?.trim() || fallback;
-  const API_BASE = meta('api-base-url', 'https://loan-approval-prediction-h0ux.onrender.com').replace(/\/+$/, '');
+  const API_BASE = meta('api-base-url', 'https://loan-approval-predction.onrender.com').replace(/\/+$/, '');
   const PRODUCT_NAME = meta('product-name', 'LoanWise AI');
   const REQUEST_TIMEOUT_MS = 20000;
   const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
